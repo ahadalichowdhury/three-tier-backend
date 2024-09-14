@@ -1,0 +1,9 @@
+apiVersion: v2
+name: common
+description: A Helm chart for common configurations
+
+# The chart version. This is different from the version of the app.
+version: 0.1.0
+
+# The version of the application this chart deploys.
+appVersion: "1.0"
