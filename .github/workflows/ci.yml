@@ -91,6 +91,6 @@ jobs:
         run: |
           git config --global user.email "smahadalichowdhury@gmail.com"
           git config --global user.name "ahadalichowdhury"
-          git add helm/three-tier-backend/values.yaml
+          git add helm/node-app-charts/values.yaml
           git commit -m "Update tag in Helm chart"
           git push
