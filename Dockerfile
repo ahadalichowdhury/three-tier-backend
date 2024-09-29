@@ -13,8 +13,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Copy .env file
-COPY .env .env
+# Accept build arguments for environment variables
+ARG DATABASE
+
+# Set environment variables inside the container
+ENV DATABASE=$DATABASE
 
 # Expose port (change if necessary)
 EXPOSE 5000

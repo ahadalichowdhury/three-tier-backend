@@ -1,8 +1,5 @@
-# CICD using GitHub Actions for a React app
-
 name: CI/CD
 
-# Exclude the workflow to run on changes to the helm chart
 on:
   push:
     branches:
@@ -28,11 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Build the React app
-      #   run: npm run build
+      - name: Build the React app
+        run: npm run build
 
-      # - name: Test
-      #   run: npm test
+      - name: Test
+        run: npm test
 
   code-quality:
     runs-on: ubuntu-latest
@@ -41,8 +38,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Run ESLint
-      #   run: npm run lint
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
 
   push:
     runs-on: ubuntu-latest
@@ -62,13 +62,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push action
+      - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/three-tier-backend:${{github.run_id}}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/three-tier-backend:${{ github.run_id }}
+          build-args: |
+            DATABASE=${{ secrets.DATABASE }}
 
   update-newtag-in-helm-chart:
     runs-on: ubuntu-latest
@@ -83,7 +85,7 @@ jobs:
 
       - name: Update tag in Helm chart
         run: |
-          sed -i 's/tag: .*/tag: "${{github.run_id}}"/' helm/node-app-charts/values.yaml
+          sed -i 's/tag: .*/tag: "${{ github.run_id }}"/' helm/node-app-charts/values.yaml
 
       - name: Commit and push changes
         run: |
